@@ -1,4 +1,4 @@
-# docker-node-yarn-scss-lint
+# docker-react-native-android
 
 * Nodejs@6.x
 * Yarn@latest package manager
