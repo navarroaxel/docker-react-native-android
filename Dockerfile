@@ -1,38 +1,19 @@
-# Pull base image.
-FROM ubuntu:16.04
-MAINTAINER navarroaxel <navarroaxel@gmail.com>
+FROM ubuntu:18.04
 
-LABEL Description="Node LTS with yarn and react-native"
-
-# Repo for Yarn
-RUN apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
-RUN echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+LABEL Description="Node LTS with react-native for Android"
 
 # Install base software packages
 RUN apt-get update && \
-    apt-get install software-properties-common \
-    python-software-properties \
+    apt-get install -y openjdk-8-jdk-headless \
     wget \
     curl \
     git \
-    unzip -y \
-    yarn && \
-    apt-get clean
-
-# ——————————
-# Install Java.
-# ——————————
-
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+    unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+# ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 # ——————————
 # Installs i386 architecture required for running 32 bit Android tools
@@ -86,7 +67,7 @@ ENV PATH $PATH:$GRADLE_HOME/bin
 # ——————————
 # Install Node
 # ——————————
-ENV NODE_VERSION 6.9.1
+ENV NODE_VERSION 10.13.0
 RUN cd && \
     wget -q http://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz && \
     tar -xzf node-v${NODE_VERSION}-linux-x64.tar.gz && \
@@ -97,7 +78,7 @@ ENV PATH ${PATH}:/opt/node/bin
 # ——————————
 # Install React-Native package
 # ——————————
-RUN npm install react-native-cli --global
+RUN npm install --global react-native-cli
 
 ENV LANG en_US.UTF-8
 
